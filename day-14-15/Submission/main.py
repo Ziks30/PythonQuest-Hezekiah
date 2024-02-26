@@ -10,43 +10,72 @@ aws_services = [
     {
         "id": 2,
         "service": "Simple Storage Service(S3)"
+    },
+    {
+        "id": 3,
+        "service": "Simple Notification Services"
+    },
+    {
+        "id": 4,
+        "service": "DynamoDB"
+    },
+    {
+        "id": 5,
+        "service": "Elastic Compute Cloud"
     }
 ]
 
 # base url
-@app.route('/', methods=[''])
+@app.route("/", methods=["GET"])
 def hello():
-    pass
+    return jsonify("HI!")
 
 
 # /aws_services/get_all
-@app.route('/', methods=[''])
+@app.route("/aws_services/get_all", methods=["GET"])
 def get_all():
-    pass
+    return jsonify(aws_services)
 
 
 # /aws_services/<int:service_id>
-@app.route('/', methods=[''])
-def get_service():
-    pass
+@app.route("/aws_services/<int:service_id>", methods=["GET"])
+def get_service(service_id):
+    try:
+        service = aws_services[service_id]
+        return jsonify(service)
+    except:
+        return "whoops, service not found"
 
 
 # /aws_services/add_service
-@app.route('/', methods=[''])
+@app.route("/aws_services/add_service", methods=["GET", "POST"])
 def add_service():
-    pass
+    newService = {"id": 6, "service": "Identity and Access Management(IAM)"}
+    aws_services.append(newService)
+    return jsonify(aws_services)
 
 
 # /aws_services/delete_service/<int:service_id>
-@app.route('/', methods=[''])
-def delete_service():
-    pass
+@app.route("/aws_services/delete_service/<int:service_id>", methods=["GET", "DELETE"])
+def delete_service(service_id):
+
+    for service in aws_services:
+        if service["id"] == service_id:
+            aws_services.remove(service)
+        return jsonify(aws_services)
+    return jsonify({"error": "Service not found"})
 
 
 # /aws_services/update_service/<int:service_id>
-@app.route('/', methods=[''])
-def update_service():
-    pass
+@app.route("/aws_services/update_service/<int:service_id>", methods=["GET", "PATCH"])
+def update_service(service_id):
+    data = {"id": 7, "service": "Amazon RDS Proxy"}
+    for service in aws_services:
+        if service["id"] == service_id:
+            service.update(data)
+            return jsonify(aws_services)
+    return jsonify({"error": "Service not found"})
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run(debug=True)
